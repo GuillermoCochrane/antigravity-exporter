@@ -1,0 +1,25 @@
+# Extracción de datos y privacidad (conversaciones exportadas del usuario)
+output/
+
+# Cache y bytecode de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Entornos virtuales
+.venv/
+venv/
+ENV/
+env/
+
+# Archivos de sistema operativo y editores
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.log
+
