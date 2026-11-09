@@ -18,12 +18,12 @@ import urllib.error
 import re
 from datetime import datetime
 import argparse
+from core.discovery import find_active_daemon
 
 __version__ = "1.0.0"
 
 BASE_DIR = r"C:\Users\cochr\.gemini\antigravity"
 SUMMARIES_DB = os.path.join(BASE_DIR, "conversation_summaries.db")
-DAEMON_DIR = os.path.join(BASE_DIR, "daemon")
 ADAPTER_DIR = os.path.dirname(os.path.abspath(__file__))
 
 OUTPUT_RAW = os.path.join(ADAPTER_DIR, "output", "raw_json")
@@ -33,23 +33,6 @@ OUTPUT_MD = os.path.join(ADAPTER_DIR, "output", "markdown")
 def ensure_dirs():
     for d in [OUTPUT_RAW, OUTPUT_CLEAN, OUTPUT_MD]:
         os.makedirs(d, exist_ok=True)
-
-def find_active_daemon():
-    files = glob.glob(os.path.join(DAEMON_DIR, "hub_*.json"))
-    for f in sorted(files, key=os.path.getmtime, reverse=True):
-        try:
-            with open(f, "r") as jf:
-                data = json.load(jf)
-            port = data.get("httpPort")
-            token = data.get("csrfToken")
-            url = f"http://127.0.0.1:{port}"
-            req = urllib.request.Request(url, headers={"x-codeium-csrf-token": token})
-            with urllib.request.urlopen(req, timeout=1) as resp:
-                if resp.status == 200:
-                    return port, token
-        except Exception:
-            continue
-    raise RuntimeError("No se encontro ningun daemon activo de Antigravity. Asegurate de que el IDE o CLI este abierto.")
 
 def rpc_call(port, token, method, payload):
     url = f"http://127.0.0.1:{port}/exa.language_server_pb.LanguageServerService/{method}"
