@@ -19,6 +19,8 @@ import re
 from datetime import datetime
 import argparse
 
+__version__ = "1.0.0"
+
 BASE_DIR = r"C:\Users\cochr\.gemini\antigravity"
 SUMMARIES_DB = os.path.join(BASE_DIR, "conversation_summaries.db")
 DAEMON_DIR = os.path.join(BASE_DIR, "daemon")
@@ -193,6 +195,7 @@ def export_conversation(port, token, cid, meta_info=None):
 
 def main():
     parser = argparse.ArgumentParser(description="Antigravity Conversation Exporter")
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument("--list", action="store_true", help="Listar todas las conversaciones disponibles")
     parser.add_argument("--id", type=str, help="Exportar una conversacion especifica por ID")
     parser.add_argument("--all", action="store_true", help="Exportar TODAS las conversaciones")
