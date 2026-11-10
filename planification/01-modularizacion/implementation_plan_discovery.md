@@ -73,9 +73,9 @@ def is_daemon_alive(port: int, token: str, timeout: float = 1.0) -> bool:
 
 ## 5. Checklist de Verificación Manual
 
-- [ ] Ejecutar `python dump_antigravity.py --version` y validar que responda `dump_antigravity.py 1.0.1`.
-- [ ] Ejecutar `python dump_antigravity.py --list` y validar que siga listando sin errores.
-- [ ] Ejecutar `python dump_antigravity.py --id eacc4ff1` y validar que contacte al daemon vía `core/discovery.py` y realice la exportación exitosa.
+- [x] Ejecutar `python dump_antigravity.py --version` y validar que responda `dump_antigravity.py 1.0.1`.
+- [x] Ejecutar `python dump_antigravity.py --list` y validar que siga listando sin errores.
+- [x] Ejecutar `python dump_antigravity.py --id eacc4ff1` y validar que contacte al daemon vía `core/discovery.py` y realice la exportación exitosa.
 
 ---
 

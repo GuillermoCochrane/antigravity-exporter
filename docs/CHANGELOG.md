@@ -4,6 +4,19 @@ Este documento registra la evolución del proyecto versión por versión y resum
 
 ---
 
+# v1.0.1 — Desacoplamiento del módulo de descubrimiento de daemons
+
+* **Modularización de la Capa de Descubrimiento:**
+  * Se crea el paquete `core/` y el módulo `core/discovery.py`.
+  * Se extraen las funciones `find_active_daemon` e `is_daemon_alive`, independizándolas del script monolítico.
+  * Se añade soporte para inyección de rutas de daemons personalizadas (`daemon_dir`).
+  * `dump_antigravity.py` delega la detección en `core.discovery`, manteniendo la retrocompatibilidad total del CLI.
+
+* **Planificación y Tracking:**
+  * Se inaugura el Sprint 01 en `planification/01-modularizacion/` con `walkthrough.md` e `implementation_plan_discovery.md`.
+
+---
+
 # v1.0.0 — Extractor local y adaptador ConnectRPC de Antigravity
 
 * **Ingeniería Inversa y Telemetría:**

@@ -35,22 +35,28 @@ El proyecto se rige bajo los principios:
 ## Estructura del Proyecto
 
 ```text
-references/antygravity_adapter/
+antigravity-exporter/
 ├── dump_antigravity.py         # Orquestador y punto de entrada de la CLI
 ├── README.md                   # Documentación general y guía rápida
+├── LICENSE                     # Licencia pública MIT
+├── .gitignore                  # Reglas de exclusión (aislamiento estricto de output/)
+│
+├── core/                       # Módulos del sistema (Arquitectura en capas)
+│   ├── __init__.py             # Inicializador del paquete core
+│   └── discovery.py            # Capa 2: Descubrimiento de socket y validación de daemon
 │
 ├── docs/                       # Documentación técnica retrospectiva (Estado resultante)
 │   ├── ARCHITECTURE.md         # Diseño arquitectónico y módulos
-│   ├── LABORATORY.md           # Registro de hipótesis, experimentos y descubrimientos
-│   ├── DECISIONS.md            # Registro de decisiones arquitectónicas (ADRs)
+│   ├── CHANGELOG.md            # Registro de evolución histórica y versiones
 │   ├── DATA_FLOW.md            # Diagrama del flujo y transformación de datos
-│   └── INTEGRATION.md          # Especificación del contrato con chat-exporter
+│   ├── DECISIONS.md            # Registro de decisiones arquitectónicas (ADRs)
+│   ├── INTEGRATION.md          # Especificación del contrato con chat-exporter
+│   ├── LABORATORY.md           # Registro de hipótesis, experimentos y descubrimientos
+│   └── ROADMAP.md              # Estado actual y próximos hitos planificados
 │
-├── planification/              # Documentación prospectiva (Planes y directivas de sesión)
-│   ├── plan_antigravity_adapter.md
-│   ├── project_rules.md
-│   ├── walkthrough_movs.md
-│   └── implementation_plan_movs.md
+├── planification/              # Documentación prospectiva (Planes y directivas por sprint)
+│   ├── 00-inicial/             # Bitácora y planificación fundacional (v1.0.0)
+│   └── 01-modularizacion/      # Sprint activo: walkthrough e implementation plans
 │
 ├── lab/                        # Sondas de laboratorio y desensamblado
 │   ├── README.md               # Catálogo descriptivo de sondas experimentales
@@ -59,7 +65,7 @@ references/antygravity_adapter/
 │   ├── rpc_discovery/          # Rastreo de métodos y schemas ConnectRPC en JS
 │   └── rpc_tests/              # Sondas dinámicas de invocación contra el daemon
 │
-└── output/                     # Almacén de artefactos exportados
+└── output/                     # Almacén de artefactos exportados (excluido de git)
     ├── raw_json/               # Volcados íntegros del árbol de la API
     ├── clean_json/             # Diálogos normalizados para entrenamiento o ingesta
     └── markdown/               # Documentos legibles oficiales renderizados
@@ -118,7 +124,8 @@ references/antygravity_adapter/
 * **Comportamiento:** Solo lectura pasiva. No altera los registros ni compite con el bloqueo de base de datos del IDE.
 
 ### 2. Capa de Descubrimiento de Socket (Daemon Hub)
-* **Directorio:** `~/.gemini/antigravity/daemon/hub_*.json`
+* **Módulo:** `core/discovery.py` (`find_active_daemon` e `is_daemon_alive`)
+* **Directorio escaneado:** `~/.gemini/antigravity/daemon/hub_*.json`
 * **Responsabilidad:** Identificar dinámicamente cuál de los daemons generados por sesiones previas se encuentra activo en el sistema.
 * **Mecanismo:** Ordena los descriptores por fecha de modificación descendente y ejecuta un sondeo HTTP no intrusivo con timeout de 1 segundo. El primer descriptor que devuelve estado `200` autenticado provee el puerto activo y el token CSRF para el resto de la sesión.
 
