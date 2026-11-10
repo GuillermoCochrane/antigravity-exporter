@@ -10,34 +10,15 @@ y genera:
 
 import os
 import sys
-import glob
-import json
-import re
-from datetime import datetime
 import argparse
 from core import __version__
 from core.discovery import find_active_daemon
 from core.database import list_conversations, get_conversations_dict
-from core.normalizer import extract_clean_messages, build_clean_conversation
+from core.normalizer import build_clean_conversation
 from core.client import get_cascade_trajectory, convert_trajectory_to_markdown
-
-ADAPTER_DIR = os.path.dirname(os.path.abspath(__file__))
-
-OUTPUT_RAW = os.path.join(ADAPTER_DIR, "output", "raw_json")
-OUTPUT_CLEAN = os.path.join(ADAPTER_DIR, "output", "clean_json")
-OUTPUT_MD = os.path.join(ADAPTER_DIR, "output", "markdown")
-
-def ensure_dirs():
-    for d in [OUTPUT_RAW, OUTPUT_CLEAN, OUTPUT_MD]:
-        os.makedirs(d, exist_ok=True)
-
-def sanitize_filename(name):
-    clean = re.sub(r'[\\/*?:"<>|]', "", name).strip()
-    clean = clean.replace(" ", "_")
-    return clean[:50] if clean else "conversacion"
+from core.writer import build_file_base, save_raw_json, save_clean_json, save_markdown
 
 def export_conversation(port, token, cid, meta_info=None):
-    ensure_dirs()
     print(f"\n---> Procesando conversacion: {cid}")
     
     # Obtener trayectoria
@@ -52,38 +33,23 @@ def export_conversation(port, token, cid, meta_info=None):
     steps = traj.get("steps", [])
     print(f"  [OK] Trayectoria recuperada: {len(steps)} pasos")
 
-    # Determinar nombre legible
-    title = ""
-    date_prefix = ""
-    if meta_info:
-        title = meta_info.get("title") or meta_info.get("preview") or ""
-        last_mod = meta_info.get("last_modified_time", "")
-        if last_mod:
-            date_prefix = last_mod[:10] + "_"
-    
-    file_base = f"{date_prefix}{sanitize_filename(title)}_{cid[:8]}"
+    title = (meta_info.get("title") or meta_info.get("preview") or "") if meta_info else ""
+    file_base = build_file_base(cid, meta_info)
 
     # 1. Guardar Raw JSON
-    raw_path = os.path.join(OUTPUT_RAW, f"{cid}.raw.json")
-    with open(raw_path, "w", encoding="utf-8") as f:
-        json.dump(traj_data, f, ensure_ascii=False, indent=2)
+    raw_path = save_raw_json(traj_data, cid)
     print(f"  [1/3] Raw JSON: {os.path.basename(raw_path)}")
 
     # 2. Guardar Clean JSON
     clean_data = build_clean_conversation(cid, traj_id, steps, title)
-    clean_msgs = clean_data["messages"]
-    clean_path = os.path.join(OUTPUT_CLEAN, f"{file_base}.clean.json")
-    with open(clean_path, "w", encoding="utf-8") as f:
-        json.dump(clean_data, f, ensure_ascii=False, indent=2)
-    print(f"  [2/3] Clean JSON: {os.path.basename(clean_path)} ({len(clean_msgs)} msgs)")
+    clean_path = save_clean_json(clean_data, file_base)
+    print(f"  [2/3] Clean JSON: {os.path.basename(clean_path)} ({len(clean_data['messages'])} msgs)")
 
     # 3. Guardar Markdown oficial
     if traj_id:
         try:
             md_content = convert_trajectory_to_markdown(port, token, cid, traj_id)
-            md_path = os.path.join(OUTPUT_MD, f"{file_base}.md")
-            with open(md_path, "w", encoding="utf-8") as f:
-                f.write(md_content)
+            md_path = save_markdown(md_content, file_base)
             print(f"  [3/3] Markdown: {os.path.basename(md_path)} ({len(md_content)} chars)")
         except Exception as e:
             print(f"  [WARN] ConvertTrajectoryToMarkdown fallo: {e}")
