@@ -18,9 +18,8 @@ import urllib.error
 import re
 from datetime import datetime
 import argparse
+from core import __version__
 from core.discovery import find_active_daemon
-
-__version__ = "1.0.0"
 
 BASE_DIR = r"C:\Users\cochr\.gemini\antigravity"
 SUMMARIES_DB = os.path.join(BASE_DIR, "conversation_summaries.db")
