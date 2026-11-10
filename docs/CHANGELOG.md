@@ -4,6 +4,25 @@ Este documento registra la evolución del proyecto versión por versión y resum
 
 ---
 
+# v1.0.3 — Desacoplamiento del módulo normalizer
+
+* **Modularización de la Capa de Transformación y Normalización:**
+  * Se crea `core/normalizer.py` aislando las funciones de parseo y transformación pura.
+  * Se implementa `parse_iso_timestamp` para convertir marcas ISO 8601 a timestamps Unix enteros.
+  * Se implementa `extract_clean_messages` para aislar turnos dialécticos (`user` y `assistant`) filtrando llamadas a herramientas, ejecuciones de terminal y pensamientos.
+  * Se implementa `build_clean_conversation` como helper de alto nivel para generar el esquema normalizado de `clean_json`.
+  * `dump_antigravity.py` delega la normalización en `core.normalizer` sin efectos secundarios (100% funciones puras, cero I/O).
+
+* **Testing y Evidencia:**
+  * Se incorpora la suite de pruebas manuales para `core/normalizer.py` en `docs/MANUAL_TESTING.md`.
+  * Se valida la transformación de marcas de tiempo y el filtrado de turnos en memoria, y la exportación end-to-end con `--id`.
+
+* **Arquitectura y Tracking:**
+  * Se actualiza `docs/ARCHITECTURE.md` reflejando `core/normalizer.py` en el árbol y en la descripción de la Capa 4.
+  * Se completa el Paso 3 en `planification/01-modularizacion/walkthrough.md` y en `implementation_plan_normalizer.md`.
+
+---
+
 # v1.0.2 — Desacoplamiento del módulo de base de datos y catálogo
 
 * **Modularización de la Capa de Catálogo:**

@@ -4,6 +4,36 @@ Este documento reúne las pruebas manuales utilizadas para validar el comportami
 
 ---
 
+# v1.0.3 — Desacoplamiento de core/normalizer.py
+
+## 1. Prueba Unitaria de Funciones Puras en Memoria
+Valida que `core/normalizer.py` transforme marcas de tiempo y filtre turnos dialécticos sin efectos secundarios ni dependencias externas.
+
+**Comando:**
+```powershell
+python -c "from core.normalizer import parse_iso_timestamp, extract_clean_messages; ts = parse_iso_timestamp('2026-11-01T14:30:00.123456Z'); mock_steps = [{'type': 'CORTEX_STEP_TYPE_USER_INPUT', 'userInput': {'userResponse': 'Hola'}, 'metadata': {'createdAt': '2026-11-01T14:30:00Z'}}, {'type': 'CORTEX_STEP_TYPE_PLANNER_RESPONSE', 'plannerResponse': {'response': 'Que tal'}, 'metadata': {'createdAt': '2026-11-01T14:30:05Z'}}]; msgs = extract_clean_messages(mock_steps); print('parse_iso:', ts); print('msgs count:', len(msgs)); print('roles:', [m['role'] for m in msgs])"
+```
+
+**Resultado:**
+✔ `parse_iso: 1793554200`  
+✔ `msgs count: 2`  
+✔ `roles: ['user', 'assistant']` — Normalización correcta en memoria.
+
+---
+
+## 2. Extracción End-to-End con Generación de Clean JSON
+Valida que `dump_antigravity.py` orqueste el normalizador y genere el archivo `.clean.json` con idéntica fidelidad.
+
+**Comando:**
+```powershell
+python dump_antigravity.py --id 1e706e7b
+```
+
+**Resultado:**
+✔ Genera `2026-11-01_conversacion_1e706e7b.clean.json (3 msgs)` con esquema normalizado, IDs y timestamps limpios.
+
+---
+
 # v1.0.2 — Desacoplamiento de core/database.py
 
 ## 1. Importación Aislada de Base de Datos

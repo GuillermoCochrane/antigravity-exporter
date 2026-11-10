@@ -99,9 +99,9 @@ def build_clean_conversation(cid: str, steps: list[dict], meta_info: dict = None
 
 ## 5. Checklist de Verificación Manual
 
-- [ ] Probar `parse_iso_timestamp` con timestamps ISO reales (`2026-11-01T14:30:00Z` y microsegundos).
-- [ ] Probar `extract_clean_messages` pasando un mock con pasos de sistema, tool calls y turnos dialécticos.
-- [ ] Ejecutar `python dump_antigravity.py --id 1e706e7b` y validar que el archivo `clean_json` generado sea exactamente igual al previo.
+- [x] Probar `parse_iso_timestamp` con timestamps ISO reales (`2026-11-01T14:30:00Z` y microsegundos).
+- [x] Probar `extract_clean_messages` pasando un mock con pasos de sistema, tool calls y turnos dialécticos.
+- [x] Ejecutar `python dump_antigravity.py --id 1e706e7b` y validar que el archivo `clean_json` generado sea exactamente igual al previo.
 
 ---
 

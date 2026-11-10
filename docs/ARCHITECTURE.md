@@ -44,7 +44,8 @@ antigravity-exporter/
 ├── core/                       # Módulos del sistema (Arquitectura en capas)
 │   ├── __init__.py             # Inicializador del paquete core
 │   ├── database.py             # Capa 1: Catálogo y consultas SQLite
-│   └── discovery.py            # Capa 2: Descubrimiento de socket y validación de daemon
+│   ├── discovery.py            # Capa 2: Descubrimiento de socket y validación de daemon
+│   └── normalizer.py           # Capa 4: Transformación pura de payload a Clean JSON
 │
 ├── docs/                       # Documentación técnica retrospectiva (Estado resultante)
 │   ├── ARCHITECTURE.md         # Diseño arquitectónico y módulos
@@ -142,7 +143,8 @@ antigravity-exporter/
   * `POST /exa.language_server_pb.LanguageServerService/ConvertTrajectoryToMarkdown`: Delega en el compilador nativo del Language Server la generación del texto formateado en Markdown.
 
 ### 4. Capa de Transformación y Normalización
-* **Función:** `extract_clean_messages(steps)`
+* **Módulo:** `core/normalizer.py` (`extract_clean_messages`, `parse_iso_timestamp`, `build_clean_conversation`)
+* **Naturaleza:** Funciones 100% puras (cero I/O, sin red ni dependencias externas).
 * **Responsabilidad:** Aislar la conversación dialéctica (humano ↔ asistente) eliminando el ruido operacional del agente (llamadas internas a herramientas de terminal, lecturas de archivos intermedias, fallbacks de sistema y pensamientos descartados).
 * **Mapeo:**
   * `CORTEX_STEP_TYPE_USER_INPUT` ➡️ `role: "user"`
