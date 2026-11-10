@@ -4,6 +4,45 @@ Este documento reúne las pruebas manuales utilizadas para validar el comportami
 
 ---
 
+# v1.1.0 — Consolidación de Release y Suite Completa de Regresión
+
+Valida que el launcher `dump_antigravity.py` (11 líneas) orqueste de forma transparente a través de `core.cli`, `core.exporter`, `core.client`, `core.normalizer`, `core.writer`, `core.database` y `core.discovery`, preservando 100% la compatibilidad observable.
+
+## 1. Verificación de Versión y Ayuda
+**Comandos:**
+```powershell
+python dump_antigravity.py --version
+python dump_antigravity.py --help
+```
+**Resultado:**
+✔ `dump_antigravity.py 1.1.0`  
+✔ Menú de opciones y descripción renderizados correctamente.
+
+---
+
+## 2. Listado de Catálogo (`--list`)
+**Comando:**
+```powershell
+python dump_antigravity.py --list
+```
+**Resultado:**
+✔ Consulta SQLite y renderiza en terminal la tabla formateada de 30 conversaciones.
+
+---
+
+## 3. Extracción Quirúrgica End-to-End (`--id`)
+**Comando:**
+```powershell
+python dump_antigravity.py --id 1e706e7b
+```
+**Resultado:**
+✔ Resuelve por prefijo a `1e706e7b-86d4-4155-898e-46000bc4baed`.  
+✔ Conecta al daemon activo mediante `core.discovery` y `core.client`.  
+✔ Procesa trayectoria a través del motor `core.exporter` y `core.normalizer`.  
+✔ Persiste los 3 archivos en `output/` (`raw_json`, `clean_json`, `markdown`) mediante `core.writer` con idéntica fidelidad.
+
+---
+
 # v1.0.7 — Desacoplamiento de core/cli.py
 
 ## 1. Importación Aislada y Parser de Argumentos

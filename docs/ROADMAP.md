@@ -22,21 +22,23 @@ Este documento define la evolución técnica y las etapas de desarrollo planific
 
 ---
 
-## Próximos Hitos
+### v1.1.0 — Modularización y Arquitectura Hexagonal (Completado)
 
-### Fase 2: Modularización y Desacoplamiento (v1.1.0)
-
-* **Objetivo:** Transformar el script monolítico `dump_antigravity.py` en una arquitectura modular por capas con responsabilidades delimitadas.
-* **Módulos proyectados:**
-  * `core/discovery.py`: Detección de daemon activo, lectura de tokens y validación de sockets.
-  * `core/database.py`: Consultas de metadatos sobre `conversation_summaries.db` (SQLite).
-  * `core/client.py`: Transporte HTTP ConnectRPC (`GetCascadeTrajectory` y `ConvertTrajectoryToMarkdown`).
-  * `core/normalizer.py`: Funciones puras de transformación desde payload de daemon a `clean_json`.
-  * `core/writer.py`: Gestión del sistema de archivos y persistencia de las 3 salidas.
-  * `cli.py`: Orquestador de entrada y manejo de argumentos con `argparse`.
-* **Criterio:** Mantener cero dependencias externas y compatibilidad total con la interfaz de comandos actual.
+* [x] **Arquitectura en Capas:** Desacoplamiento total del script monolítico original en el paquete `core/`.
+* [x] **Capa 2 (Discovery):** `core/discovery.py` con localización dinámica de descriptores `hub_*.json` y chequeo de socket vivo.
+* [x] **Capa 1 (Database):** `core/database.py` con consultas SQLite aisladas y helpers de metadatos (`list_conversations`, `get_conversations_dict`).
+* [x] **Capa 3 (Client):** `core/client.py` con transporte ConnectRPC sobre HTTP, inyección de tokens y clase `AntigravityClient`.
+* [x] **Capa 4 (Normalizer):** `core/normalizer.py` con funciones 100% puras (cero I/O) para filtrar turnos dialécticos y timestamps.
+* [x] **Capa 5 (Writer):** `core/writer.py` con creación idempotente de carpetas, sanitización cross-platform y persistencia en `utf-8`.
+* [x] **Capa 6 (Exporter):** `core/exporter.py` con orquestación headless del pipeline para consumo como SDK o por lotes.
+* [x] **Capa de Presentación (CLI):** `core/cli.py` con configuración de `argparse`, renderizado de tablas y soporte para tests en memoria.
+* [x] **Runner Ejecutable:** `dump_antigravity.py` reducido a un launcher mínimo de 11 líneas.
+* [x] **Batería de Regresión:** Verificación exitosa de los 4 modos del CLI (`--version`, `--help`, `--list`, `--id`).
+* [x] **Metodología y Convención:** Incorporación de plantillas estándar de commits en `planification/rules/COMMIT_TEMPLATES.md`.
 
 ---
+
+## Próximos Hitos
 
 ### Fase 3: Batería de Pruebas Automatizadas y Fixtures (v1.2.0)
 

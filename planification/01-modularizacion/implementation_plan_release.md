@@ -41,11 +41,11 @@ Este paso final certifica que:
 
 ## 3. Checklist de Verificación Manual (Suite Completa de Regresión)
 
-- [ ] `python dump_antigravity.py --version` -> Retorna versión `1.1.0` consumida desde `core.__version__`.
-- [ ] `python dump_antigravity.py --help` -> Muestra el menú de ayuda sin errores de sintaxis.
-- [ ] `python dump_antigravity.py --list` -> Renderiza la tabla completa de 30 conversaciones.
-- [ ] `python dump_antigravity.py --id 1e706e7b` -> Exporta quirúrgicamente una conversación y genera los 3 formatos en `output/`.
-- [ ] Validar que los 3 archivos en `output/` mantengan idéntica fidelidad a los generados en la versión v1.0.0.
+- [x] `python dump_antigravity.py --version` -> Retorna versión `1.1.0` consumida desde `core.__version__`.
+- [x] `python dump_antigravity.py --help` -> Muestra el menú de ayuda sin errores de sintaxis.
+- [x] `python dump_antigravity.py --list` -> Renderiza la tabla completa de 30 conversaciones.
+- [x] `python dump_antigravity.py --id 1e706e7b` -> Exporta quirúrgicamente una conversación y genera los 3 formatos en `output/`.
+- [x] Validar que los 3 archivos en `output/` mantengan idéntica fidelidad a los generados en la versión v1.0.0.
 
 ---
 

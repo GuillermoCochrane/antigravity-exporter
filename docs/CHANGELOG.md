@@ -4,6 +4,30 @@ Este documento registra la evolución del proyecto versión por versión y resum
 
 ---
 
+# v1.1.0 — Modularización completa y Arquitectura Hexagonal
+
+* **Consolidación de la Arquitectura (Sprint 01):**
+  * Desacoplamiento total del script monolítico original (239 líneas) en el paquete `core/` estructurado en una Arquitectura Hexagonal de responsabilidades únicas:
+    * `dump_antigravity.py`: Launcher ejecutable mínimo (11 líneas).
+    * `core/cli.py`: Adaptador CLI y formateador visual de consola con soporte para inyección de argumentos en memoria.
+    * `core/exporter.py`: Motor headless / Caso de uso de exportación individual y por lotes.
+    * `core/discovery.py`: Descubrimiento dinámico de socket y token CSRF.
+    * `core/database.py`: Consultas SQLite sobre `conversation_summaries.db`.
+    * `core/client.py`: Transporte ConnectRPC sobre HTTP y cliente `AntigravityClient`.
+    * `core/normalizer.py`: Funciones puras (cero I/O) de normalización de turnos y timestamps.
+    * `core/writer.py`: Persistencia atómica de triple formato (`raw_json`, `clean_json`, `markdown`) con codificación `utf-8`.
+
+* **Calidad y Verificación de Regresión:**
+  * Batería completa de pruebas de regresión manual documentada en `docs/MANUAL_TESTING.md`.
+  * Verificación de retrocompatibilidad 100% de la interfaz CLI (`--version`, `--help`, `--list`, `--id`).
+  * Cero dependencias externas agregadas: 100% biblioteca estándar de Python 3.
+
+* **Documentación y Metodología:**
+  * Formalización de convenciones y plantillas de commits en `planification/rules/COMMIT_TEMPLATES.md`.
+  * Actualización de la documentación pública en `README.md` y cierre de la Fase 2 en `docs/ROADMAP.md`.
+
+---
+
 # v1.0.7 — Desacoplamiento del módulo cli
 
 * **Modularización de la Capa de Presentación (Adaptador CLI):**

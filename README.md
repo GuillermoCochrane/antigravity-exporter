@@ -2,7 +2,7 @@
 
 > Extrae, decodifica y preserva conversaciones de Antigravity en formatos abiertos (Raw JSON, Clean JSON y Markdown) mediante ConnectRPC y SQLite local.
 
-[![Versión](https://img.shields.io/badge/version-1.0.0-blue.svg)](docs/CHANGELOG.md)
+[![Versión](https://img.shields.io/badge/version-1.1.0-blue.svg)](docs/CHANGELOG.md)
 [![Licencia](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.8%2B-brightgreen.svg)](#requisitos)
 [![Dependencias](https://img.shields.io/badge/dependencies-0-success.svg)](#requisitos)
@@ -33,14 +33,19 @@ El proyecto interactúa en caliente con el daemon local de Antigravity (`agy.exe
 
 # Estado
 
-- ✅ **v1.0.0 (Estable):** Versión fundacional completa y testeada.
-- ✅ CLI funcional con soporte para versión (`dump_antigravity.py --version`).
-- ✅ Descubrimiento dinámico de sockets y tokens CSRF (`hub_*.json`).
-- ✅ Extracción masiva comprobada (100% de éxito en 30 sesiones históricas).
-- ✅ Soporte para sesiones masivas (+15.000 pasos recuperados).
+- ✅ **v1.1.0 (Estable):** Arquitectura Hexagonal desacoplada en capas dentro del paquete `core/`.
+- ✅ Launcher ejecutable ultra-liviano (`dump_antigravity.py`, 11 líneas).
+- ✅ Módulo `core/cli.py`: adaptador de terminal e intérprete de comandos con soporte para tests en memoria.
+- ✅ Módulo `core/exporter.py`: motor de exportación headless / caso de uso de orquestación.
+- ✅ Módulo `core/discovery.py`: descubrimiento dinámico de socket y token CSRF (`hub_*.json`).
+- ✅ Módulo `core/database.py`: consultas aisladas a SQLite `conversation_summaries.db`.
+- ✅ Módulo `core/client.py`: transporte ConnectRPC sobre HTTP y cliente `AntigravityClient`.
+- ✅ Módulo `core/normalizer.py`: funciones 100% puras de normalización (listas para testing con fixtures).
+- ✅ Módulo `core/writer.py`: persistencia atómica y gestión de rutas seguras en disco.
+- ✅ Extracción masiva comprobada (100% de éxito en 30 sesiones históricas y sesiones masivas de +16.000 pasos).
 - ✅ Triple formato de salida simultáneo (`raw_json`, `clean_json`, `markdown`).
 - ✅ Adapter integrado para el pipeline de `chat-exporter` (`antigravityParser.js`).
-- ✅ Suite documental técnica completa (ADRs, Laboratorio, Arquitectura, Changelog y Roadmap).
+- ✅ Suite documental técnica completa (ADRs, Laboratorio, Arquitectura, Testing Manual, Changelog y Roadmap).
 
 ---
 
@@ -101,10 +106,20 @@ python dump_antigravity.py --all
 
 ```text
 antigravity-exporter/
-├── dump_antigravity.py         # Entry point de la CLI de producción
+├── dump_antigravity.py         # Launcher mínimo ejecutable (11 líneas)
 ├── README.md                   # Documentación principal de bienvenida
 ├── LICENSE                     # Licencia pública MIT
 ├── .gitignore                  # Reglas de exclusión (aislamiento estricto de output/)
+│
+├── core/                       # Paquete del sistema (Arquitectura Hexagonal en capas)
+│   ├── __init__.py             # Single source of truth para la versión del paquete
+│   ├── cli.py                  # Adaptador CLI: Intérprete de consola y formateo de tablas
+│   ├── client.py               # Capa 3: Cliente ConnectRPC y transporte HTTP
+│   ├── database.py             # Capa 1: Catálogo y consultas SQLite
+│   ├── discovery.py            # Capa 2: Descubrimiento de socket y validación de daemon
+│   ├── exporter.py             # Capa 6: Motor headless de exportación (Pipeline)
+│   ├── normalizer.py           # Capa 4: Transformación pura de payload a Clean JSON
+│   └── writer.py               # Capa 5: Persistencia segura y gestión de rutas en disco
 │
 ├── docs/                       # Documentación técnica retrospectiva (Estado resultante)
 │   ├── ARCHITECTURE.md         # Diseño arquitectónico y módulos de 6 capas
@@ -113,15 +128,13 @@ antigravity-exporter/
 │   ├── DECISIONS.md            # Registro de decisiones arquitectónicas (ADRs)
 │   ├── INTEGRATION.md          # Especificación del contrato con chat-exporter
 │   ├── LABORATORY.md           # Registro de hipótesis (H-001 a H-006) y experimentos
+│   ├── MANUAL_TESTING.md       # Casos y evidencias de pruebas manuales por versión
 │   └── ROADMAP.md              # Estado actual y próximos hitos planificados
 │
-├── planification/              # Documentación prospectiva (Planes y directivas de sesión)
-│   ├── plan_antigravity_adapter.md
-│   ├── project_rules.md
-│   ├── roadmap.md
-│   ├── plan.md
-│   ├── devolucion.md
-│   └── org1.md
+├── planification/              # Documentación prospectiva y metodología
+│   ├── rules/                  # Reglas de workflow, sprints y commit templates (ignorado en git)
+│   ├── 00-inicial/             # Documentación prospectiva fundacional (v1.0.0)
+│   └── 01-modularizacion/      # Sprint 01: Walkthrough y planes de implementación por módulo
 │
 ├── lab/                        # Laboratorio de ingeniería inversa (40 sondas auxiliares)
 │   ├── README.md               # Catálogo descriptivo de sondas
