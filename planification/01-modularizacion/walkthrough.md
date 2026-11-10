@@ -24,14 +24,16 @@ Este acoplamiento impide la creación de pruebas unitarias limpias sin depender 
 
 ```text
 antigravity-exporter/
-├── dump_antigravity.py          # Entrypoint CLI ultra-liviano (~40 líneas, orquestador argparse)
+├── dump_antigravity.py          # Runner de entrada (5 líneas, invoca core.cli)
 ├── core/
 │   ├── __init__.py              # Declara el paquete core y exporta metadatos/versión
 │   ├── discovery.py             # Detección dinámica de socket, puerto y token CSRF
 │   ├── database.py              # Consultas SQLite sobre conversation_summaries.db
 │   ├── client.py                # Cliente HTTP ConnectRPC (GetCascadeTrajectory, ConvertTrajectoryToMarkdown)
 │   ├── normalizer.py            # Función PURA de transformación (Raw JSON -> Clean JSON)
-│   └── writer.py                # Persistencia atómica de las 3 salidas en disco (raw, clean, md)
+│   ├── writer.py                # Persistencia atómica de las 3 salidas en disco (raw, clean, md)
+│   ├── exporter.py              # Orquestador del pipeline headless (Caso de uso)
+│   └── cli.py                   # Adaptador de interfaz CLI y presentación de consola
 └── planification/
     └── 01-modularizacion/       # Planes de implementación específicos por módulo
 ```
@@ -42,13 +44,14 @@ antigravity-exporter/
 
 ```mermaid
 flowchart TD
-    CLI["dump_antigravity.py (CLI)"] -->|1. Listar/Consultar| DB["core/database.py"]
-    CLI -->|2. Localizar socket activo| DISC["core/discovery.py"]
-    CLI -->|3. Traer payload y MD| RPC["core/client.py"]
-    RPC -->|4. Entregar Raw JSON| NORM["core/normalizer.py (Función Pura)"]
-    NORM -->|5. Entregar Clean JSON| WRITE["core/writer.py"]
-    RPC -->|6. Entregar Raw y MD| WRITE
-    WRITE -->|7. Persistir en disco| OUT[("output/")]
+    RUN["dump_antigravity.py (Runner)"] --> CLI["core/cli.py (Adaptador CLI)"]
+    CLI -->|1. Listar catálogo| DB["core/database.py"]
+    CLI -->|2. Localizar socket| DISC["core/discovery.py"]
+    CLI -->|3. Delegar exportación| EXP["core/exporter.py (Orquestador)"]
+    EXP -->|4. Traer trayectoria y MD| RPC["core/client.py"]
+    EXP -->|5. Transformar mensajes| NORM["core/normalizer.py (Función Pura)"]
+    EXP -->|6. Persistir formatos| WRITE["core/writer.py"]
+    WRITE -->|7. Guardar en disco| OUT[("output/")]
 ```
 
 ---
@@ -62,7 +65,9 @@ flowchart TD
 | [x] | **3** | `1.0.3` | `core/normalizer.py` | [`implementation_plan_normalizer.md`](implementation_plan_normalizer.md) | Transformación pura de payload RPC a esquema limpio |
 | [x] | **4** | `1.0.4` | `core/client.py` | [`implementation_plan_client.md`](implementation_plan_client.md) | Llamadas ConnectRPC (`GetCascadeTrajectory`, etc.) |
 | [x] | **5** | `1.0.5` | `core/writer.py` | [`implementation_plan_writer.md`](implementation_plan_writer.md) | Creación de directorios y escritura segura en disco |
-| [ ] | **6** | `v1.1.0` | `dump_antigravity.py` | `implementation_plan_cli.md` | Adelgazamiento del CLI, tests integrales y release |
+| [ ] | **6** | `1.0.6` | `core/exporter.py` | [`implementation_plan_exporter.md`](implementation_plan_exporter.md) | Orquestación headless del flujo de exportación |
+| [ ] | **7** | `1.0.7` | `core/cli.py` | `implementation_plan_cli.md` | Adaptador CLI, manejo de flags y presentación |
+| [ ] | **8** | `v1.1.0` | `dump_antigravity.py` | `implementation_plan_release.md` | Runner ultra-liviano, docs globales y release |
 
 ---
 
