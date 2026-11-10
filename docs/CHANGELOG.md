@@ -4,6 +4,24 @@ Este documento registra la evolución del proyecto versión por versión y resum
 
 ---
 
+# v1.0.2 — Desacoplamiento del módulo de base de datos y catálogo
+
+* **Modularización de la Capa de Catálogo:**
+  * Se crea `core/database.py` aislando las consultas a `conversation_summaries.db`.
+  * Se eliminan rutas hardcodeadas de usuario en `dump_antigravity.py`, centralizando `DEFAULT_DB_PATH` con `os.path.expanduser("~")` respetando DRY.
+  * Se implementan `list_conversations` y el helper indexado `get_conversations_dict`.
+  * `dump_antigravity.py` delega las consultas SQLite en `core.database`.
+
+* **Testing y Evidencia:**
+  * Se incorpora `docs/MANUAL_TESTING.md` para asentar casos de prueba manuales y resultados observables por versión.
+  * Se documenta la prueba de importación aislada, listado de catálogo y lookup de metadatos.
+
+* **Arquitectura y Tracking:**
+  * Se actualiza `docs/ARCHITECTURE.md` reflejando la extracción del módulo.
+  * Se completa el Paso 2 en el tracker de `planification/01-modularizacion/walkthrough.md`.
+
+---
+
 # v1.0.1 — Desacoplamiento del módulo de descubrimiento de daemons
 
 * **Modularización de la Capa de Descubrimiento:**

@@ -58,7 +58,7 @@ flowchart TD
 | Estado | Paso | Versión | Módulo a Extraer | Plan de Implementación | Responsabilidad |
 |:---:|:---:|:---:|---|---|---|
 | [x] | **1** | `1.0.1` | `core/discovery.py` | [`implementation_plan_discovery.md`](implementation_plan_discovery.md) | Detección de `hub_*.json` y chequeo de socket vivo |
-| [ ] | **2** | `1.0.2` | `core/database.py` | `implementation_plan_database.md` | Consultas a SQLite `conversation_summaries.db` |
+| [x] | **2** | `1.0.2` | `core/database.py` | `implementation_plan_database.md` | Consultas a SQLite `conversation_summaries.db` |
 | [ ] | **3** | `1.0.3` | `core/normalizer.py` | `implementation_plan_normalizer.md` | Transformación pura de payload RPC a esquema limpio |
 | [ ] | **4** | `1.0.4` | `core/client.py` | `implementation_plan_client.md` | Llamadas ConnectRPC (`GetCascadeTrajectory`, etc.) |
 | [ ] | **5** | `1.0.5` | `core/writer.py` | `implementation_plan_writer.md` | Creación de directorios y escritura segura en disco |

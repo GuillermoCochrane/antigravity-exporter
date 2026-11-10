@@ -43,6 +43,7 @@ antigravity-exporter/
 │
 ├── core/                       # Módulos del sistema (Arquitectura en capas)
 │   ├── __init__.py             # Inicializador del paquete core
+│   ├── database.py             # Capa 1: Catálogo y consultas SQLite
 │   └── discovery.py            # Capa 2: Descubrimiento de socket y validación de daemon
 │
 ├── docs/                       # Documentación técnica retrospectiva (Estado resultante)
@@ -52,6 +53,7 @@ antigravity-exporter/
 │   ├── DECISIONS.md            # Registro de decisiones arquitectónicas (ADRs)
 │   ├── INTEGRATION.md          # Especificación del contrato con chat-exporter
 │   ├── LABORATORY.md           # Registro de hipótesis, experimentos y descubrimientos
+│   ├── MANUAL_TESTING.md       # Casos y evidencias de pruebas manuales por versión
 │   └── ROADMAP.md              # Estado actual y próximos hitos planificados
 │
 ├── planification/              # Documentación prospectiva (Planes y directivas por sprint)
@@ -119,7 +121,8 @@ antigravity-exporter/
 ## Capas del Sistema
 
 ### 1. Capa de Catálogo y Metadatos (SQLite)
-* **Archivo:** `~/.gemini/antigravity/conversation_summaries.db`
+* **Módulo:** `core/database.py` (`list_conversations` y `get_conversations_dict`)
+* **Archivo consultado:** `~/.gemini/antigravity/conversation_summaries.db`
 * **Responsabilidad:** Proporcionar la lista exhaustiva de conversaciones históricas (`conversation_id`), fechas de modificación (`last_modified_time`), cantidad de pasos acumulados (`step_count`) y títulos o descripciones preliminares (`title`, `preview`).
 * **Comportamiento:** Solo lectura pasiva. No altera los registros ni compite con el bloqueo de base de datos del IDE.
 

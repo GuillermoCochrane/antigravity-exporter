@@ -82,9 +82,9 @@ def get_conversations_dict(db_path: str = None) -> dict[str, dict]:
 
 ## 5. Checklist de Verificación Manual
 
-- [ ] Ejecutar `python dump_antigravity.py --list` y verificar que liste con éxito las 30 conversaciones.
-- [ ] Ejecutar `python dump_antigravity.py --id 1e706e7b` y validar que el lookup de metadatos en SQLite funcione correctamente.
-- [ ] Validar que `core/database.py` se pueda importar de forma aislada en una sesión de Python sin depender de otros módulos.
+- [x] Ejecutar `python dump_antigravity.py --list` y verificar que liste con éxito las 30 conversaciones.
+- [x] Ejecutar `python dump_antigravity.py --id 1e706e7b` y validar que el lookup de metadatos en SQLite funcione correctamente.
+- [x] Validar que `core/database.py` se pueda importar de forma aislada en una sesión de Python sin depender de otros módulos.
 
 ---
 
