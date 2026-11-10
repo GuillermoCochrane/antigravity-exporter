@@ -4,6 +4,26 @@ Este documento registra la evolución del proyecto versión por versión y resum
 
 ---
 
+# v1.0.5 — Desacoplamiento del módulo writer
+
+* **Modularización de la Capa de Salida y Persistencia:**
+  * Se crea `core/writer.py` centralizando la gestión de rutas del sistema de archivos y almacenamiento en disco.
+  * Se implementa `ensure_output_dirs` para la inicialización idempotente de las carpetas de salida (`raw_json`, `clean_json`, `markdown`).
+  * Se extraen `sanitize_filename` y `build_file_base` para la generación de nombres seguros y cross-platform.
+  * Se implementan las funciones atómicas `save_raw_json`, `save_clean_json` y `save_markdown` con codificación explícita `utf-8`.
+  * Se incorpora `save_conversation_bundle` para la persistencia unificada de todos los formatos disponibles.
+  * `dump_antigravity.py` delega toda la persistencia en `core.writer`, reduciendo su tamaño a 105 líneas y eliminando dependencias de `json`, `re` y `datetime`.
+
+* **Testing y Evidencia:**
+  * Se incorpora la suite de pruebas para `core/writer.py` en `docs/MANUAL_TESTING.md`.
+  * Se valida la sanitización de nombres, creación de directorios y la persistencia end-to-end con `--id`.
+
+* **Arquitectura y Tracking:**
+  * Se actualiza `docs/ARCHITECTURE.md` incorporando `core/writer.py` en la estructura del proyecto y en el detalle de la Capa 5.
+  * Se completa el Paso 5 en `planification/01-modularizacion/walkthrough.md` y en `implementation_plan_writer.md`.
+
+---
+
 # v1.0.4 — Desacoplamiento del módulo client
 
 * **Modularización de la Capa de Comunicación (ConnectRPC):**

@@ -61,7 +61,7 @@ flowchart TD
 | [x] | **2** | `1.0.2` | `core/database.py` | [`implementation_plan_database.md`](implementation_plan_database.md) | Consultas a SQLite `conversation_summaries.db` |
 | [x] | **3** | `1.0.3` | `core/normalizer.py` | [`implementation_plan_normalizer.md`](implementation_plan_normalizer.md) | Transformación pura de payload RPC a esquema limpio |
 | [x] | **4** | `1.0.4` | `core/client.py` | [`implementation_plan_client.md`](implementation_plan_client.md) | Llamadas ConnectRPC (`GetCascadeTrajectory`, etc.) |
-| [ ] | **5** | `1.0.5` | `core/writer.py` | [`implementation_plan_writer.md`](implementation_plan_writer.md) | Creación de directorios y escritura segura en disco |
+| [x] | **5** | `1.0.5` | `core/writer.py` | [`implementation_plan_writer.md`](implementation_plan_writer.md) | Creación de directorios y escritura segura en disco |
 | [ ] | **6** | `v1.1.0` | `dump_antigravity.py` | `implementation_plan_cli.md` | Adelgazamiento del CLI, tests integrales y release |
 
 ---

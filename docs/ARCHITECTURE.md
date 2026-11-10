@@ -46,7 +46,8 @@ antigravity-exporter/
 │   ├── client.py               # Capa 3: Cliente ConnectRPC y transporte HTTP
 │   ├── database.py             # Capa 1: Catálogo y consultas SQLite
 │   ├── discovery.py            # Capa 2: Descubrimiento de socket y validación de daemon
-│   └── normalizer.py           # Capa 4: Transformación pura de payload a Clean JSON
+│   ├── normalizer.py           # Capa 4: Transformación pura de payload a Clean JSON
+│   └── writer.py               # Capa 5: Persistencia segura y gestión de rutas en disco
 │
 ├── docs/                       # Documentación técnica retrospectiva (Estado resultante)
 │   ├── ARCHITECTURE.md         # Diseño arquitectónico y módulos
@@ -154,11 +155,13 @@ antigravity-exporter/
   * `CORTEX_STEP_TYPE_PLANNER_RESPONSE` ➡️ `role: "assistant"`
   * Timestamps ISO con microsegundos ➡️ Segundos Unix enteros (`epoch seconds`).
 
-### 5. Capa de Salida (Multi-formato)
-La arquitectura produce simultáneamente tres representaciones con diferentes niveles de abstracción:
-* **Fidelidad Absoluta (`output/raw_json/`):** El payload completo tal como viaja por el socket RPC. Permite auditorías exhaustivas del funcionamiento del modelo y herramientas.
-* **Modelo Semántico (`output/clean_json/`):** Array lineal de mensajes listo para fine-tuning, análisis cognitivo o ingesta en grafos de conocimiento.
-* **Lectura Humana (`output/markdown/`):** Documento listo para Obsidian, VS Code o publicación.
+### 5. Capa de Salida (Multi-formato y Persistencia)
+* **Módulo:** `core/writer.py` (`get_output_dirs`, `ensure_output_dirs`, `sanitize_filename`, `build_file_base`, `save_raw_json`, `save_clean_json`, `save_markdown`, `save_conversation_bundle`)
+* **Responsabilidad:** Gestionar la creación idempotente de carpetas, sanitización cross-platform de nombres de archivo y persistencia segura con codificación explícita `utf-8`.
+* **Representaciones producidas simultáneamente:**
+  * **Fidelidad Absoluta (`output/raw_json/`):** El payload completo tal como viaja por el socket RPC. Permite auditorías exhaustivas del funcionamiento del modelo y herramientas.
+  * **Modelo Semántico (`output/clean_json/`):** Array lineal de mensajes listo para fine-tuning, análisis cognitivo o ingesta en grafos de conocimiento.
+  * **Lectura Humana (`output/markdown/`):** Documento listo para Obsidian, VS Code o publicación.
 
 ### 6. Capa de Integración Externa (Adapter)
 * **Archivo:** `references/chat-exporter/antigravityParser.js`

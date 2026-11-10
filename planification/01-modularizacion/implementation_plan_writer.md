@@ -113,9 +113,9 @@ def save_conversation_bundle(
 
 ## 5. Checklist de Verificación Manual
 
-- [ ] Importar `core.writer` de forma aislada y probar generación de nombres y guardado con un directorio temporal.
-- [ ] Ejecutar `python dump_antigravity.py --id 1e706e7b` y validar que los 3 archivos se sigan generando con exactamente los mismos nombres y contenidos.
-- [ ] Validar que `ensure_output_dirs` sea idempotente (funcione sin error tanto si las carpetas ya existen como si no).
+- [x] Importar `core.writer` de forma aislada y probar generación de nombres y guardado con un directorio temporal.
+- [x] Ejecutar `python dump_antigravity.py --id 1e706e7b` y validar que los 3 archivos se sigan generando con exactamente los mismos nombres y contenidos.
+- [x] Validar que `ensure_output_dirs` sea idempotente (funcione sin error tanto si las carpetas ya existen como si no).
 
 ---
 

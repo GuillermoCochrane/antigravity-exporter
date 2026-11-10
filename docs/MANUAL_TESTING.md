@@ -4,6 +4,39 @@ Este documento reúne las pruebas manuales utilizadas para validar el comportami
 
 ---
 
+# v1.0.5 — Desacoplamiento de core/writer.py
+
+## 1. Importación Aislada y Sanitización de Rutas
+Valida que `core/writer.py` cargue sin dependencias externas, sanitice caracteres reservados e inicialice las carpetas de salida de forma idempotente.
+
+**Comando:**
+```powershell
+python -c "from core.writer import sanitize_filename, build_file_base, ensure_output_dirs; print('Writer import OK'); print('slug:', sanitize_filename('Hola: Mundo / Prueba?')); print('dirs:', list(ensure_output_dirs().keys()))"
+```
+
+**Resultado:**
+✔ `Writer import OK`  
+✔ `slug: Hola_Mundo__Prueba` — Sanitización cross-platform correcta.  
+✔ `dirs: ['base', 'raw', 'clean', 'markdown']` — Creación idempotente y resolución de rutas.
+
+---
+
+## 2. Extracción End-to-End con Persistencia Modular
+Valida que `dump_antigravity.py` orqueste `core/writer.py` para almacenar de forma atómica y consistente los 3 formatos en disco.
+
+**Comando:**
+```powershell
+python dump_antigravity.py --id 1e706e7b
+```
+
+**Resultado:**
+✔ `[1/3] Raw JSON: 1e706e7b-86d4-4155-898e-46000bc4baed.raw.json`  
+✔ `[2/3] Clean JSON: 2026-11-01_conversacion_1e706e7b.clean.json (3 msgs)`  
+✔ `[3/3] Markdown: 2026-11-01_conversacion_1e706e7b.md (3081 chars)`  
+Persistencia completa y verificada en `output/`.
+
+---
+
 # v1.0.4 — Desacoplamiento de core/client.py
 
 ## 1. Importación Aislada de core.client
