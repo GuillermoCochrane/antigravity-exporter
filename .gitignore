@@ -23,3 +23,7 @@ Thumbs.db
 .vscode/
 *.log
 
+# Metodología y reglas operativas internas
+planification/rules/
+
+
