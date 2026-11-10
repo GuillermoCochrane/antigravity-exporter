@@ -100,9 +100,9 @@ def export_all_conversations(
 
 ## 5. Checklist de Verificación Manual
 
-- [ ] Importar `core.exporter` de forma aislada y validar que exponga `export_conversation` y `export_all_conversations`.
-- [ ] Ejecutar prueba programática en Python llamando `export_conversation` y verificar que retorne el diccionario de rutas generado.
-- [ ] Ejecutar `python dump_antigravity.py --id 1e706e7b` y validar que el CLI coordine con `core.exporter` y conserve el comportamiento idéntico.
+- [x] Importar `core.exporter` de forma aislada y validar que exponga `export_conversation` y `export_all_conversations`.
+- [x] Ejecutar prueba programática en Python llamando `export_conversation` y verificar que retorne el diccionario de rutas generado.
+- [x] Ejecutar `python dump_antigravity.py --id 1e706e7b` y validar que el CLI coordine con `core.exporter` y conserve el comportamiento idéntico.
 
 ---
 

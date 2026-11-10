@@ -4,6 +4,47 @@ Este documento reúne las pruebas manuales utilizadas para validar el comportami
 
 ---
 
+# v1.0.6 — Desacoplamiento de core/exporter.py
+
+## 1. Importación Aislada del Motor Headless
+Valida que `core/exporter.py` cargue sin dependencias de consola y exponga `export_conversation` y `export_all_conversations`.
+
+**Comando:**
+```powershell
+python -c "from core.exporter import export_conversation, export_all_conversations; print('Exporter import OK')"
+```
+
+**Resultado:**
+✔ `Exporter import OK` — Exportación correcta del orquestador headless.
+
+---
+
+## 2. Invocación Programática Headless (Modo SDK / Biblioteca)
+Valida que `export_conversation` orqueste el flujo completo en memoria y devuelva el diccionario de rutas generadas sin emitir prints ni acoplarse a `sys.argv`.
+
+**Comando:**
+```powershell
+python -c "from core.discovery import find_active_daemon; from core.client import AntigravityClient; from core.exporter import export_conversation; port, token = find_active_daemon(); client = AntigravityClient(port, token); paths = export_conversation(client, '1e706e7b-86d4-4155-898e-46000bc4baed'); print('Exported keys:', list(paths.keys()))"
+```
+
+**Resultado:**
+✔ `Exported keys: ['raw', 'clean', 'markdown']` — Pipeline ejecutado y persistido de forma 100% programática.
+
+---
+
+## 3. Extracción End-to-End con CLI
+Valida que `dump_antigravity.py` orqueste con `core/exporter.py` y reporte visualmente el progreso en la consola.
+
+**Comando:**
+```powershell
+python dump_antigravity.py --id 1e706e7b
+```
+
+**Resultado:**
+✔ Conexión exitosa, feedback visual en consola y persistencia confirmada de los 3 formatos en `output/`.
+
+---
+
 # v1.0.5 — Desacoplamiento de core/writer.py
 
 ## 1. Importación Aislada y Sanitización de Rutas

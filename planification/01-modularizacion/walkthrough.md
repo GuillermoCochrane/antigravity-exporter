@@ -65,7 +65,7 @@ flowchart TD
 | [x] | **3** | `1.0.3` | `core/normalizer.py` | [`implementation_plan_normalizer.md`](implementation_plan_normalizer.md) | Transformación pura de payload RPC a esquema limpio |
 | [x] | **4** | `1.0.4` | `core/client.py` | [`implementation_plan_client.md`](implementation_plan_client.md) | Llamadas ConnectRPC (`GetCascadeTrajectory`, etc.) |
 | [x] | **5** | `1.0.5` | `core/writer.py` | [`implementation_plan_writer.md`](implementation_plan_writer.md) | Creación de directorios y escritura segura en disco |
-| [ ] | **6** | `1.0.6` | `core/exporter.py` | [`implementation_plan_exporter.md`](implementation_plan_exporter.md) | Orquestación headless del flujo de exportación |
+| [x] | **6** | `1.0.6` | `core/exporter.py` | [`implementation_plan_exporter.md`](implementation_plan_exporter.md) | Orquestación headless del flujo de exportación |
 | [ ] | **7** | `1.0.7` | `core/cli.py` | `implementation_plan_cli.md` | Adaptador CLI, manejo de flags y presentación |
 | [ ] | **8** | `v1.1.0` | `dump_antigravity.py` | `implementation_plan_release.md` | Runner ultra-liviano, docs globales y release |
 

@@ -10,8 +10,9 @@
   - [2. Capa de Descubrimiento de Socket (Daemon Hub)](#2-capa-de-descubrimiento-de-socket-daemon-hub)
   - [3. Capa de Comunicación (ConnectRPC Client)](#3-capa-de-comunicación-connectrpc-client)
   - [4. Capa de Transformación y Normalización](#4-capa-de-transformación-y-normalización)
-  - [5. Capa de Salida (Multi-formato)](#5-capa-de-salida-multi-formato)
-  - [6. Capa de Integración Externa (Adapter)](#6-capa-de-integración-externa-adapter)
+  - [5. Capa de Salida (Multi-formato y Persistencia)](#5-capa-de-salida-multi-formato-y-persistencia)
+  - [6. Capa de Aplicación y Orquestación (Export Engine)](#6-capa-de-aplicación-y-orquestación-export-engine)
+  - [7. Capa de Integración Externa (Adapter)](#7-capa-de-integración-externa-adapter)
 - [Módulos y Responsabilidades](#módulos-y-responsabilidades)
   - [CLI de Producción (`dump_antigravity.py`)](#cli-de-producción-dump_antigravitypy)
   - [Laboratorio de Investigación (`lab/`)](#laboratorio-de-investigación-lab)
@@ -46,6 +47,7 @@ antigravity-exporter/
 │   ├── client.py               # Capa 3: Cliente ConnectRPC y transporte HTTP
 │   ├── database.py             # Capa 1: Catálogo y consultas SQLite
 │   ├── discovery.py            # Capa 2: Descubrimiento de socket y validación de daemon
+│   ├── exporter.py             # Capa 6: Orquestación del motor de exportación (Pipeline)
 │   ├── normalizer.py           # Capa 4: Transformación pura de payload a Clean JSON
 │   └── writer.py               # Capa 5: Persistencia segura y gestión de rutas en disco
 │
@@ -163,7 +165,12 @@ antigravity-exporter/
   * **Modelo Semántico (`output/clean_json/`):** Array lineal de mensajes listo para fine-tuning, análisis cognitivo o ingesta en grafos de conocimiento.
   * **Lectura Humana (`output/markdown/`):** Documento listo para Obsidian, VS Code o publicación.
 
-### 6. Capa de Integración Externa (Adapter)
+### 6. Capa de Aplicación y Orquestación (Export Engine)
+* **Módulo:** `core/exporter.py` (`export_conversation`, `export_all_conversations`)
+* **Responsabilidad:** Coordinar el flujo completo de exportación consumiendo el cliente ConnectRPC (`core.client`), el transformador de mensajes (`core.normalizer`) y la persistencia en disco (`core.writer`).
+* **Naturaleza:** Motor puramente *headless* (cero dependencias de consola o UI), desacoplado de `print` y con soporte para callbacks de progreso, permitiendo su reutilización como biblioteca en pruebas automatizadas o extensiones futuras.
+
+### 7. Capa de Integración Externa (Adapter)
 * **Archivo:** `references/chat-exporter/antigravityParser.js`
 * **Responsabilidad:** Traducir los archivos de `output/clean_json/` al modelo interno consumido por el pipeline de `chat-exporter`.
 * **Cumplimiento de contrato:** Implementa `extractMessages(conversation)` retornando `{ id, role, createTime, rawContent: { content_type: "text", parts: [...] } }`, permitiendo que el core de `chat-exporter` aplique sus filtros de rol, ordenamiento y generadores Markdown sin modificaciones.

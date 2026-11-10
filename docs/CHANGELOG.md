@@ -4,6 +4,24 @@ Este documento registra la evolución del proyecto versión por versión y resum
 
 ---
 
+# v1.0.6 — Desacoplamiento del módulo exporter
+
+* **Modularización de la Capa de Aplicación (Motor Headless):**
+  * Se crea `core/exporter.py` aislando la orquestación del pipeline de exportación del script CLI.
+  * Se implementa `export_conversation` para coordinar de forma headless la llamada RPC, la normalización dialéctica y el almacenamiento multi-formato.
+  * Se implementa `export_all_conversations` para procesamiento por lotes con soporte de callbacks de progreso desacoplados de la terminal.
+  * `dump_antigravity.py` delega el flujo de exportación en `core.exporter`, reduciendo su responsabilidad exclusivamente a la interacción visual con el usuario.
+
+* **Testing y Evidencia:**
+  * Se incorpora la suite de pruebas para `core/exporter.py` en `docs/MANUAL_TESTING.md`.
+  * Se valida la importación aislada, la invocación programática pura (modo biblioteca / SDK) y la exportación completa vía CLI con `--id`.
+
+* **Arquitectura y Tracking:**
+  * Se actualiza `docs/ARCHITECTURE.md` incorporando `core/exporter.py` en la estructura del proyecto y en el detalle de la Capa 6.
+  * Se completa el Paso 6 en `planification/01-modularizacion/walkthrough.md` y en `implementation_plan_exporter.md`.
+
+---
+
 # v1.0.5 — Desacoplamiento del módulo writer
 
 * **Modularización de la Capa de Salida y Persistencia:**
