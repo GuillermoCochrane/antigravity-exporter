@@ -20,6 +20,7 @@ import argparse
 from core import __version__
 from core.discovery import find_active_daemon
 from core.database import list_conversations, get_conversations_dict
+from core.normalizer import extract_clean_messages, build_clean_conversation
 
 ADAPTER_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -49,49 +50,6 @@ def sanitize_filename(name):
     clean = re.sub(r'[\\/*?:"<>|]', "", name).strip()
     clean = clean.replace(" ", "_")
     return clean[:50] if clean else "conversacion"
-
-def parse_iso_timestamp(ts_str):
-    if not ts_str:
-        return None
-    try:
-        clean = ts_str.split(".")[0].rstrip("Z")
-        return int(datetime.fromisoformat(clean).timestamp())
-    except Exception:
-        return None
-
-def extract_clean_messages(steps):
-    messages = []
-    for s in steps:
-        stype = s.get("type", "")
-        meta = s.get("metadata", {})
-        created_at = meta.get("createdAt")
-        ts = parse_iso_timestamp(created_at)
-
-        if stype == "CORTEX_STEP_TYPE_USER_INPUT" and "userInput" in s:
-            u_text = s["userInput"].get("userResponse") or ""
-            if not u_text:
-                items = s["userInput"].get("items", [])
-                u_text = "\n".join([i.get("text", "") for i in items if i.get("text")])
-            
-            if u_text.strip():
-                messages.append({
-                    "id": meta.get("executionId") or f"user_{len(messages)}",
-                    "role": "user",
-                    "timestamp": ts,
-                    "text": u_text.strip()
-                })
-
-        elif stype == "CORTEX_STEP_TYPE_PLANNER_RESPONSE" and "plannerResponse" in s:
-            pr = s["plannerResponse"]
-            p_text = pr.get("response") or ""
-            if p_text.strip():
-                messages.append({
-                    "id": pr.get("messageId") or f"bot_{len(messages)}",
-                    "role": "assistant",
-                    "timestamp": ts,
-                    "text": p_text.strip()
-                })
-    return messages
 
 def export_conversation(port, token, cid, meta_info=None):
     ensure_dirs()
@@ -127,15 +85,8 @@ def export_conversation(port, token, cid, meta_info=None):
     print(f"  [1/3] Raw JSON: {os.path.basename(raw_path)}")
 
     # 2. Guardar Clean JSON
-    clean_msgs = extract_clean_messages(steps)
-    clean_data = {
-        "id": cid,
-        "trajectoryId": traj_id,
-        "title": title,
-        "stepCount": len(steps),
-        "messageCount": len(clean_msgs),
-        "messages": clean_msgs
-    }
+    clean_data = build_clean_conversation(cid, traj_id, steps, title)
+    clean_msgs = clean_data["messages"]
     clean_path = os.path.join(OUTPUT_CLEAN, f"{file_base}.clean.json")
     with open(clean_path, "w", encoding="utf-8") as f:
         json.dump(clean_data, f, ensure_ascii=False, indent=2)
