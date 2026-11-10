@@ -12,7 +12,6 @@ import os
 import sys
 import glob
 import json
-import sqlite3
 import urllib.request
 import urllib.error
 import re
@@ -20,9 +19,8 @@ from datetime import datetime
 import argparse
 from core import __version__
 from core.discovery import find_active_daemon
+from core.database import list_conversations, get_conversations_dict
 
-BASE_DIR = r"C:\Users\cochr\.gemini\antigravity"
-SUMMARIES_DB = os.path.join(BASE_DIR, "conversation_summaries.db")
 ADAPTER_DIR = os.path.dirname(os.path.abspath(__file__))
 
 OUTPUT_RAW = os.path.join(ADAPTER_DIR, "output", "raw_json")
@@ -51,21 +49,6 @@ def sanitize_filename(name):
     clean = re.sub(r'[\\/*?:"<>|]', "", name).strip()
     clean = clean.replace(" ", "_")
     return clean[:50] if clean else "conversacion"
-
-def list_conversations():
-    if not os.path.exists(SUMMARIES_DB):
-        print(f"Error: No se encontro {SUMMARIES_DB}")
-        return []
-    conn = sqlite3.connect(SUMMARIES_DB)
-    cursor = conn.cursor()
-    cursor.execute("""
-        SELECT conversation_id, title, preview, last_modified_time, step_count, workspace_uris 
-        FROM conversation_summaries 
-        ORDER BY last_modified_time DESC
-    """)
-    rows = cursor.fetchall()
-    conn.close()
-    return rows
 
 def parse_iso_timestamp(ts_str):
     if not ts_str:
