@@ -129,9 +129,9 @@ class AntigravityClient:
 
 ## 5. Checklist de Verificación Manual
 
-- [ ] Importar `core.client` de forma aislada y probar llamada contra el daemon activo.
-- [ ] Ejecutar `python dump_antigravity.py --id 1e706e7b` y validar la recuperación de trayectoria y compilación a Markdown.
-- [ ] Verificar que si el daemon no responde o se provee un token inválido, se capture el error adecuadamente.
+- [x] Importar `core.client` de forma aislada y probar llamada contra el daemon activo.
+- [x] Ejecutar `python dump_antigravity.py --id 1e706e7b` y validar la recuperación de trayectoria y compilación a Markdown.
+- [x] Verificar que si el daemon no responde o se provee un token inválido, se capture el error adecuadamente.
 
 ---
 

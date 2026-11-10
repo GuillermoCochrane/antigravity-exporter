@@ -4,6 +4,47 @@ Este documento reúne las pruebas manuales utilizadas para validar el comportami
 
 ---
 
+# v1.0.4 — Desacoplamiento de core/client.py
+
+## 1. Importación Aislada de core.client
+Valida que el módulo de cliente cargue sin errores y exponga sus funciones y clase cliente.
+
+**Comando:**
+```powershell
+python -c "from core.client import rpc_call, get_cascade_trajectory, convert_trajectory_to_markdown, AntigravityClient; print('Client import OK')"
+```
+
+**Resultado:**
+✔ `Client import OK` — Exportación correcta de funciones y clase cliente.
+
+---
+
+## 2. Invocación RPC vía AntigravityClient
+Valida que `AntigravityClient` mantenga estado de conexión y consulte exitosamente la trayectoria y la compilación a Markdown nativo.
+
+**Comando:**
+```powershell
+python -c "from core.discovery import find_active_daemon; from core.client import AntigravityClient; port, token = find_active_daemon(); client = AntigravityClient(port, token); traj = client.get_trajectory('1e706e7b-86d4-4155-898e-46000bc4baed'); steps = traj.get('trajectory', {}).get('steps', []); traj_id = traj.get('trajectory', {}).get('trajectoryId'); md = client.to_markdown('1e706e7b-86d4-4155-898e-46000bc4baed', traj_id); print('Traj steps:', len(steps), 'MD chars:', len(md))"
+```
+
+**Resultado:**
+✔ `Traj steps: 25 MD chars: 3081` — Invocación exitosa de `GetCascadeTrajectory` y `ConvertTrajectoryToMarkdown`.
+
+---
+
+## 3. Extracción End-to-End con CLI
+Valida que `dump_antigravity.py` orqueste `core/client.py` para la extracción de la conversación y generación del triple archivo (`raw_json`, `clean_json`, `markdown`).
+
+**Comando:**
+```powershell
+python dump_antigravity.py --id 1e706e7b
+```
+
+**Resultado:**
+✔ Conexión exitosa, 25 pasos recuperados y persistencia del triple formato (`.raw.json`, `.clean.json` y `.md`).
+
+---
+
 # v1.0.3 — Desacoplamiento de core/normalizer.py
 
 ## 1. Prueba Unitaria de Funciones Puras en Memoria

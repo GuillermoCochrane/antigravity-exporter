@@ -4,6 +4,25 @@ Este documento registra la evolución del proyecto versión por versión y resum
 
 ---
 
+# v1.0.4 — Desacoplamiento del módulo client
+
+* **Modularización de la Capa de Comunicación (ConnectRPC):**
+  * Se crea `core/client.py` encapsulando todo el transporte HTTP y las llamadas ConnectRPC hacia el Language Server de Antigravity (`agy.exe`).
+  * Se implementa `rpc_call` con inyección obligatoria de cabeceras (`Content-Type: application/json` y `x-codeium-csrf-token`) y gestión de errores `urllib.error.HTTPError`.
+  * Se extraen los helpers de alto nivel `get_cascade_trajectory` y `convert_trajectory_to_markdown`.
+  * Se introduce la clase `AntigravityClient` para mantener estado de conexión (`port`, `token`) y simplificar la exportación por lotes.
+  * `dump_antigravity.py` delega las llamadas RPC en `core.client` eliminando dependencias de `urllib` en el orquestador.
+
+* **Testing y Evidencia:**
+  * Se incorpora la suite de pruebas para `core/client.py` en `docs/MANUAL_TESTING.md`.
+  * Se valida la importación aislada, la invocación mediante `AntigravityClient` y la exportación completa end-to-end con `--id`.
+
+* **Arquitectura y Tracking:**
+  * Se actualiza `docs/ARCHITECTURE.md` incorporando `core/client.py` en la estructura del proyecto y en el detalle de la Capa 3.
+  * Se completa el Paso 4 en `planification/01-modularizacion/walkthrough.md` y en `implementation_plan_client.md`.
+
+---
+
 # v1.0.3 — Desacoplamiento del módulo normalizer
 
 * **Modularización de la Capa de Transformación y Normalización:**

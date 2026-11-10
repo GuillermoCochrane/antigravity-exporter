@@ -43,6 +43,7 @@ antigravity-exporter/
 │
 ├── core/                       # Módulos del sistema (Arquitectura en capas)
 │   ├── __init__.py             # Inicializador del paquete core
+│   ├── client.py               # Capa 3: Cliente ConnectRPC y transporte HTTP
 │   ├── database.py             # Capa 1: Catálogo y consultas SQLite
 │   ├── discovery.py            # Capa 2: Descubrimiento de socket y validación de daemon
 │   └── normalizer.py           # Capa 4: Transformación pura de payload a Clean JSON
@@ -134,6 +135,7 @@ antigravity-exporter/
 * **Mecanismo:** Ordena los descriptores por fecha de modificación descendente y ejecuta un sondeo HTTP no intrusivo con timeout de 1 segundo. El primer descriptor que devuelve estado `200` autenticado provee el puerto activo y el token CSRF para el resto de la sesión.
 
 ### 3. Capa de Comunicación (ConnectRPC Client)
+* **Módulo:** `core/client.py` (`rpc_call`, `get_cascade_trajectory`, `convert_trajectory_to_markdown`, `AntigravityClient`)
 * **Protocolo:** ConnectRPC sobre HTTP/1.1 (especificación estándar de Buf/gRPC).
 * **Cabeceras obligatorias:**
   * `Content-Type: application/json`
@@ -141,6 +143,7 @@ antigravity-exporter/
 * **Endpoints consumidos:**
   * `POST /exa.language_server_pb.LanguageServerService/GetCascadeTrajectory`: Recupera el árbol con todos los pasos secuenciales de la conversación (`cascadeId`).
   * `POST /exa.language_server_pb.LanguageServerService/ConvertTrajectoryToMarkdown`: Delega en el compilador nativo del Language Server la generación del texto formateado en Markdown.
+* **Ergonomía:** Provee la clase `AntigravityClient` para mantener estado del socket (`port`, `token`) y simplificar exportaciones repetitivas.
 
 ### 4. Capa de Transformación y Normalización
 * **Módulo:** `core/normalizer.py` (`extract_clean_messages`, `parse_iso_timestamp`, `build_clean_conversation`)
