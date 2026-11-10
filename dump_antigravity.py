@@ -12,8 +12,6 @@ import os
 import sys
 import glob
 import json
-import urllib.request
-import urllib.error
 import re
 from datetime import datetime
 import argparse
@@ -21,6 +19,7 @@ from core import __version__
 from core.discovery import find_active_daemon
 from core.database import list_conversations, get_conversations_dict
 from core.normalizer import extract_clean_messages, build_clean_conversation
+from core.client import get_cascade_trajectory, convert_trajectory_to_markdown
 
 ADAPTER_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -31,20 +30,6 @@ OUTPUT_MD = os.path.join(ADAPTER_DIR, "output", "markdown")
 def ensure_dirs():
     for d in [OUTPUT_RAW, OUTPUT_CLEAN, OUTPUT_MD]:
         os.makedirs(d, exist_ok=True)
-
-def rpc_call(port, token, method, payload):
-    url = f"http://127.0.0.1:{port}/exa.language_server_pb.LanguageServerService/{method}"
-    body = json.dumps(payload).encode("utf-8")
-    req = urllib.request.Request(url, data=body, headers={
-        "Content-Type": "application/json",
-        "x-codeium-csrf-token": token
-    })
-    try:
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            return json.loads(resp.read().decode("utf-8"))
-    except urllib.error.HTTPError as e:
-        err = e.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"RPC {method} fallo ({e.code}): {err}")
 
 def sanitize_filename(name):
     clean = re.sub(r'[\\/*?:"<>|]', "", name).strip()
@@ -57,7 +42,7 @@ def export_conversation(port, token, cid, meta_info=None):
     
     # Obtener trayectoria
     try:
-        traj_data = rpc_call(port, token, "GetCascadeTrajectory", {"cascadeId": cid})
+        traj_data = get_cascade_trajectory(port, token, cid)
     except Exception as e:
         print(f"  [ERROR] No se pudo obtener la trayectoria: {e}")
         return False
@@ -95,11 +80,7 @@ def export_conversation(port, token, cid, meta_info=None):
     # 3. Guardar Markdown oficial
     if traj_id:
         try:
-            md_res = rpc_call(port, token, "ConvertTrajectoryToMarkdown", {
-                "conversationId": cid,
-                "trajectoryId": traj_id
-            })
-            md_content = md_res.get("markdown", "")
+            md_content = convert_trajectory_to_markdown(port, token, cid, traj_id)
             md_path = os.path.join(OUTPUT_MD, f"{file_base}.md")
             with open(md_path, "w", encoding="utf-8") as f:
                 f.write(md_content)
