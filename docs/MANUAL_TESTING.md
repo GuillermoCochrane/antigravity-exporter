@@ -4,6 +4,50 @@ Este documento reúne las pruebas manuales utilizadas para validar el comportami
 
 ---
 
+# v1.0.7 — Desacoplamiento de core/cli.py
+
+## 1. Importación Aislada y Parser de Argumentos
+Valida que `core/cli.py` construya y configure correctamente el `ArgumentParser` de la CLI.
+
+**Comando:**
+```powershell
+python -c "from core.cli import build_parser, run_cli; print('CLI module import OK'); parser = build_parser(); print('Parser prog:', parser.prog)"
+```
+
+**Resultado:**
+✔ `CLI module import OK`  
+✔ `Parser prog: dump_antigravity.py` — Configuración limpia del parser.
+
+---
+
+## 2. Invocación de run_cli con Inyección de Argumentos en Memoria
+Valida que `run_cli` acepte argumentos explícitos en lista sin depender de `sys.argv`.
+
+**Comando:**
+```powershell
+python -c "from core.cli import run_cli; exit_code = run_cli(['--list']); print('Exit code:', exit_code)"
+```
+
+**Resultado:**
+✔ Renderiza la tabla completa de sesiones y retorna `Exit code: 0`.
+
+---
+
+## 3. Ejecución End-to-End mediante el Runner Mínimo
+Valida que `dump_antigravity.py` delegue en `core.cli.run_cli()` y conserve la funcionalidad idéntica.
+
+**Comando:**
+```powershell
+python dump_antigravity.py --version
+python dump_antigravity.py --id 1e706e7b
+```
+
+**Resultado:**
+✔ `dump_antigravity.py 1.0.6`  
+✔ Extracción individual exitosa con feedback visual en terminal y código de salida `0`.
+
+---
+
 # v1.0.6 — Desacoplamiento de core/exporter.py
 
 ## 1. Importación Aislada del Motor Headless

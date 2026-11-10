@@ -4,6 +4,24 @@ Este documento registra la evolución del proyecto versión por versión y resum
 
 ---
 
+# v1.0.7 — Desacoplamiento del módulo cli
+
+* **Modularización de la Capa de Presentación (Adaptador CLI):**
+  * Se crea `core/cli.py` aislando el parseo de argumentos (`argparse`), la visualización de tablas en terminal y los códigos de salida.
+  * Se implementa `build_parser` y `print_conversations_table` para formatear la salida en consola.
+  * Se implementa `run_cli(args_list=None)` con soporte para inyección de listas de argumentos en memoria, habilitando pruebas automatizadas sin depender de `sys.argv`.
+  * `dump_antigravity.py` se reduce a un *launcher/runner* mínimo de 11 líneas que únicamente invoca a `core.cli.run_cli()`.
+
+* **Testing y Evidencia:**
+  * Se incorpora la suite de pruebas para `core/cli.py` en `docs/MANUAL_TESTING.md`.
+  * Se valida la importación aislada, la ejecución con listas en memoria y la retrocompatibilidad total del runner con `--version`, `--list` y `--id`.
+
+* **Arquitectura y Tracking:**
+  * Se actualiza `docs/ARCHITECTURE.md` incorporando `core/cli.py` en la estructura del proyecto y en la sección de adaptadores.
+  * Se completa el Paso 7 en `planification/01-modularizacion/walkthrough.md` y en `implementation_plan_cli.md`.
+
+---
+
 # v1.0.6 — Desacoplamiento del módulo exporter
 
 * **Modularización de la Capa de Aplicación (Motor Headless):**

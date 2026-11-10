@@ -79,10 +79,10 @@ def run_cli(args_list: list[str] = None) -> int:
 
 ## 5. Checklist de Verificación Manual
 
-- [ ] Importar `core.cli` de forma aislada y validar `build_parser()`.
-- [ ] Ejecutar `run_cli(["--version"])` y `run_cli(["--help"])` pasando listas en memoria y verificar código de salida `0`.
-- [ ] Ejecutar `python dump_antigravity.py --list` y verificar renderizado de tabla.
-- [ ] Ejecutar `python dump_antigravity.py --id 1e706e7b` y verificar flujo completo con código de salida `0`.
+- [x] Importar `core.cli` de forma aislada y validar `build_parser()`.
+- [x] Ejecutar `run_cli(["--version"])` y `run_cli(["--help"])` pasando listas en memoria y verificar código de salida `0`.
+- [x] Ejecutar `python dump_antigravity.py --list` y verificar renderizado de tabla.
+- [x] Ejecutar `python dump_antigravity.py --id 1e706e7b` y verificar flujo completo con código de salida `0`.
 
 ---
 

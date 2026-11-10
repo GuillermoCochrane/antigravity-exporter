@@ -37,13 +37,14 @@ El proyecto se rige bajo los principios:
 
 ```text
 antigravity-exporter/
-├── dump_antigravity.py         # Orquestador y punto de entrada de la CLI
+├── dump_antigravity.py         # Runner ejecutable mínimo (invoca core.cli)
 ├── README.md                   # Documentación general y guía rápida
 ├── LICENSE                     # Licencia pública MIT
 ├── .gitignore                  # Reglas de exclusión (aislamiento estricto de output/)
 │
 ├── core/                       # Módulos del sistema (Arquitectura en capas)
 │   ├── __init__.py             # Inicializador del paquete core
+│   ├── cli.py                  # Adaptador CLI: Intérprete de comandos y presentación de consola
 │   ├── client.py               # Capa 3: Cliente ConnectRPC y transporte HTTP
 │   ├── database.py             # Capa 1: Catálogo y consultas SQLite
 │   ├── discovery.py            # Capa 2: Descubrimiento de socket y validación de daemon
@@ -179,11 +180,12 @@ antigravity-exporter/
 
 ## Módulos y Responsabilidades
 
-### CLI de Producción (`dump_antigravity.py`)
-Constituye el punto de entrada ejecutable. Expone una interfaz de línea de comandos amigable que soporta tres modos de operación:
-1. `--list`: Visualización en tabla del catálogo completo de conversaciones registradas en la máquina.
-2. `--id <ID>`: Exportación quirúrgica de una conversación específica (soporta UUID completo o prefijo abreviado de 8 caracteres).
-3. `--all`: Procesamiento por lotes (Batch) que recorre e indexa todas las conversaciones del sistema.
+### Adaptador CLI (`core/cli.py`) y Runner (`dump_antigravity.py`)
+* **`dump_antigravity.py`:** Launcher ejecutable mínimo (11 líneas) cuya única función es invocar `run_cli()` y devolver el código de salida al sistema operativo.
+* **`core/cli.py`:** Adaptador de presentación que encapsula la configuración de `argparse`, soporta inyección de listas de argumentos para pruebas automatizadas y renderiza la tabla formateada y el feedback visual. Expone tres modos de operación:
+  1. `--list`: Visualización en tabla del catálogo completo de conversaciones registradas en la máquina.
+  2. `--id <ID>`: Exportación quirúrgica de una conversación específica (soporta UUID completo o prefijo abreviado de 8 caracteres).
+  3. `--all`: Procesamiento por lotes (Batch) que recorre e indexa todas las conversaciones del sistema.
 
 ### Laboratorio de Investigación (`lab/`)
 Aísla las sondas desarrolladas durante la etapa de descubrimiento para no contaminar el código de producción. Se organiza en cuatro dominios de investigación:
